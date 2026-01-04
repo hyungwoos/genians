@@ -2,22 +2,19 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>서비스사업부 인원별 R&R</title>
+  <title>Service사업부 인원별 R&R</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- 버전 고정 (캐시 이슈 방지) -->
-  <script defer src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js?v=final"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/markmap-lib@0.17.3/dist/browser/index.min.js?v=final"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/markmap-view@0.17.3/dist/browser/index.min.js?v=final"></script>
+  <!-- ✅ 이것 하나만 사용 -->
+  <script src="https://cdn.jsdelivr.net/npm/markmap-autoloader"></script>
 
   <style>
     html, body {
       width: 100%;
       height: 100%;
       margin: 0;
-      overflow: hidden;
     }
-    #mindmap {
+    .markmap {
       width: 100vw;
       height: 100vh;
     }
@@ -25,18 +22,8 @@
 </head>
 
 <body>
-<svg id="mindmap"></svg>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  function waitForMarkmap(cb) {
-    if (window.markmap?.Markmap && window.markmap?.Transformer) cb();
-    else setTimeout(() => waitForMarkmap(cb), 50);
-  }
-
-  waitForMarkmap(() => {
-    const markdown = `
-# 서비스사업부 인원별 R&R
+<pre class="markmap">
+# Service사업부 인원별 R&R
 
 ## 송기영 차장
 ### 직무
@@ -116,15 +103,11 @@ document.addEventListener('DOMContentLoaded', () => {
 ##### 판매 정책/제약 사항 협의
 ※ 최종 판매 및 고객 계약은 에스원/LG U+ 책임
 
-#### 내부 연계
-##### 기술/운영 부서 연계
-##### 원가 및 수익 구조 내부 공유
-
 ### 산출물
 #### 신규 서비스 론칭 제안 자료
 #### 공급 계약서 및 협의 이력
 #### 공급사업 구조 정리 문서
-#### 고객사(에스원/LG U+) 협의 결과 정리
+#### 고객사 협의 결과 정리
 
 ---
 
@@ -157,26 +140,6 @@ document.addEventListener('DOMContentLoaded', () => {
 #### 인바운드 문의 관리 리스트
 #### 공공 조달 제출 이력
 #### 계약/행정 관리 자료
-`;
-
-    const { Transformer, Markmap } = window.markmap;
-    const transformer = new Transformer();
-    const { root } = transformer.transform(markdown);
-
-    const svg = document.getElementById('mindmap');
-    const mm = Markmap.create(svg, null, root);
-
-    // 렌더 안정화 후 자동 맞춤
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        mm.fit();
-      });
-    });
-
-    // 화면 크기 바뀌어도 항상 맞춤
-    new ResizeObserver(() => mm.fit()).observe(svg);
-  });
-});
-</script>
+</pre>
 </body>
 </html>
