@@ -5,10 +5,10 @@
   <title>Service사업부 인원별 R&R</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Markmap core -->
-  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-  <script src="https://cdn.jsdelivr.net/npm/markmap-view@0.17.3"></script>
-  <script src="https://cdn.jsdelivr.net/npm/markmap-lib@0.17.3"></script>
+  <!-- ✅ 버전 고정 -->
+  <script defer src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/markmap-lib@0.17.3/dist/browser/index.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/markmap-view@0.17.3/dist/browser/index.min.js"></script>
 
   <style>
     html, body {
@@ -17,7 +17,7 @@
       margin: 0;
       overflow: hidden;
     }
-    svg {
+    #mindmap {
       width: 100vw;
       height: 100vh;
     }
@@ -28,7 +28,20 @@
 <svg id="mindmap"></svg>
 
 <script>
-const markdown = `
+/**
+ * 1) DOM 준비
+ * 2) 라이브러리 로드 확인
+ * 3) 다음 프레임 2회 대기(레이아웃 안정)
+ * 4) 그린 뒤 ResizeObserver로 사이즈 변경에도 fit
+ */
+document.addEventListener('DOMContentLoaded', () => {
+  function ready(fn) {
+    if (window.markmap && window.markmap.Markmap && window.markmap.Transformer) fn();
+    else setTimeout(() => ready(fn), 50);
+  }
+
+  ready(() => {
+    const markdown = `
 # Service사업부 인원별 R&R
 
 ## 송기영 차장
@@ -88,18 +101,25 @@ const markdown = `
 #### 인바운드 문의 관리 리스트
 `;
 
-const { Transformer } = window.markmap;
-const transformer = new Transformer();
-const { root } = transformer.transform(markdown);
+    const { Transformer } = window.markmap;
+    const transformer = new Transformer();
+    const { root } = transformer.transform(markdown);
 
-const svg = document.getElementById('mindmap');
-const mm = window.markmap.Markmap.create(svg, null, root);
+    const svg = document.getElementById('mindmap');
+    const mm = window.markmap.Markmap.create(svg, null, root);
 
-// ⭕ 렌더링 완료 후 중앙 정렬
-setTimeout(() => {
-  mm.fit();
-}, 0);
+    // 레이아웃 안정 후 fit (프레임 2회)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        mm.fit();
+      });
+    });
+
+    // 화면 크기 변경에도 항상 안정적으로 fit
+    const ro = new ResizeObserver(() => mm.fit());
+    ro.observe(svg);
+  });
+});
 </script>
-
 </body>
 </html>
