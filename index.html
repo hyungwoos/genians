@@ -2,13 +2,13 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>서비스사업부 인원별 R&R</title>
+  <title>Service사업부 인원별 R&R</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- ✅ 버전 고정 -->
-  <script defer src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/markmap-lib@0.17.3/dist/browser/index.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/markmap-view@0.17.3/dist/browser/index.min.js"></script>
+  <!-- 버전 고정 (캐시 이슈 방지) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js?v=final"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/markmap-lib@0.17.3/dist/browser/index.min.js?v=final"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/markmap-view@0.17.3/dist/browser/index.min.js?v=final"></script>
 
   <style>
     html, body {
@@ -28,21 +28,15 @@
 <svg id="mindmap"></svg>
 
 <script>
-/**
- * 1) DOM 준비
- * 2) 라이브러리 로드 확인
- * 3) 다음 프레임 2회 대기(레이아웃 안정)
- * 4) 그린 뒤 ResizeObserver로 사이즈 변경에도 fit
- */
 document.addEventListener('DOMContentLoaded', () => {
-  function ready(fn) {
-    if (window.markmap && window.markmap.Markmap && window.markmap.Transformer) fn();
-    else setTimeout(() => ready(fn), 50);
+  function waitForMarkmap(cb) {
+    if (window.markmap?.Markmap && window.markmap?.Transformer) cb();
+    else setTimeout(() => waitForMarkmap(cb), 50);
   }
 
-  ready(() => {
+  waitForMarkmap(() => {
     const markdown = `
-# 서비스사업부 인원별 R&R
+# Service사업부 인원별 R&R
 
 ## 송기영 차장
 ### 직무
@@ -71,6 +65,18 @@ document.addEventListener('DOMContentLoaded', () => {
 ##### 계약 조건 협의 및 갱신 관리
 ##### 계약 이행 사항 관리
 
+#### 영업 기회 발굴
+##### 파트너 기반 신규 고객 발굴
+##### 파트너 공동 영업 수행
+
+#### 영업 협의
+##### 견적/조건 협의
+##### 할인 및 공급 조건 내부 협의
+
+#### 내부 연계
+##### 기술지원 요청
+##### PoC / 데모 협의 요청
+
 ### 산출물
 #### 파트너 영업 현황 정리
 #### 신규 파트너 검토 자료
@@ -85,9 +91,40 @@ document.addEventListener('DOMContentLoaded', () => {
 #### 서비스사업부 영업
 #### 공급사업 담당 (제조사 관점)
 
+### 담당 공급 채널
+#### 에스원
+#### LG U+
+
+### 주요 R&R
+#### 신규 서비스 론칭
+##### 에스원/LG U+ 대상 신규 서비스 기획 제안
+##### 서비스 구조 및 제공 범위 정의
+##### 공급 모델 및 단가 구조 설계
+
+#### 공급 계약 체결
+##### 공급 계약 조건 협의
+##### 계약 범위 및 책임 구간 정의
+##### 공급 계약 체결 및 갱신 관리
+
+#### 공급사업 운영 연계
+##### 서비스 제공 방식 협의
+##### 구축/운영 범위 정리
+##### SLA 및 운영 기준 협의
+
+#### 대외 협업
+##### 에스원/LG U+ 판매 조직 협업
+##### 판매 정책/제약 사항 협의
+※ 최종 판매 및 고객 계약은 에스원/LG U+ 책임
+
+#### 내부 연계
+##### 기술/운영 부서 연계
+##### 원가 및 수익 구조 내부 공유
+
 ### 산출물
 #### 신규 서비스 론칭 제안 자료
 #### 공급 계약서 및 협의 이력
+#### 공급사업 구조 정리 문서
+#### 고객사(에스원/LG U+) 협의 결과 정리
 
 ---
 
@@ -96,28 +133,48 @@ document.addEventListener('DOMContentLoaded', () => {
 #### 서비스사업부 영업지원
 #### 서비스 공공 조달 담당
 
+### 주요 R&R
+#### 세일즈 인바운드 1차 대응
+##### 대표 E-mail 인바운드 확인
+##### 문의 유형 분류 (영업 / 기술 / 조달)
+##### 담당 영업사원에게 전달
+
+#### 공공 조달 실무
+##### 조달 등록/유지 관리
+##### 공공 제안 서류 제출
+##### 공공 고객 계약 관리
+
+#### 영업 행정
+##### 계약/발주 서류 정리
+##### 내부 결재 프로세스 지원
+
+#### 이력 관리
+##### 인바운드 문의 이력 관리
+##### 공공 조달 진행 이력 관리
+
 ### 산출물
 #### 사업부 매출 시트
 #### 인바운드 문의 관리 리스트
+#### 공공 조달 제출 이력
+#### 계약/행정 관리 자료
 `;
 
-    const { Transformer } = window.markmap;
+    const { Transformer, Markmap } = window.markmap;
     const transformer = new Transformer();
     const { root } = transformer.transform(markdown);
 
     const svg = document.getElementById('mindmap');
-    const mm = window.markmap.Markmap.create(svg, null, root);
+    const mm = Markmap.create(svg, null, root);
 
-    // 레이아웃 안정 후 fit (프레임 2회)
+    // 렌더 안정화 후 자동 맞춤
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         mm.fit();
       });
     });
 
-    // 화면 크기 변경에도 항상 안정적으로 fit
-    const ro = new ResizeObserver(() => mm.fit());
-    ro.observe(svg);
+    // 화면 크기 바뀌어도 항상 맞춤
+    new ResizeObserver(() => mm.fit()).observe(svg);
   });
 });
 </script>
