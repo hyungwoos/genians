@@ -2,10 +2,9 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>서비스사업부 인원별 R&R</title>
+  <title>Service사업부 인원별 R&R</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Markmap core -->
   <script src="https://cdn.jsdelivr.net/npm/markmap-autoloader"></script>
 
   <style>
@@ -28,7 +27,7 @@
 
 <body>
 <pre class="markmap">
-# 서비스사업부 인원별 R&R
+# Service사업부 인원별 R&R
 
 ## 송기영 차장
 ### 직무
@@ -69,6 +68,13 @@
 ##### 기술지원 요청
 ##### PoC / 데모 협의 요청
 
+### 산출물
+#### 파트너 영업 현황 정리
+#### 신규 파트너 검토 자료
+#### 파트너 계약 관리 이력
+#### 영업 협의 이력
+#### 파트너 이슈 정리 자료
+
 ---
 
 ## 양리나 차장
@@ -101,6 +107,16 @@
 ##### 판매 정책/제약 사항 협의
 ※ 최종 판매 및 고객 계약은 에스원/LG U+ 책임
 
+#### 내부 연계
+##### 기술/운영 부서 연계
+##### 원가 및 수익 구조 내부 공유
+
+### 산출물
+#### 신규 서비스 론칭 제안 자료
+#### 공급 계약서 및 협의 이력
+#### 공급사업 구조 정리 문서
+#### 고객사(에스원/LG U+) 협의 결과 정리
+
 ---
 
 ## 김민정 사원
@@ -118,23 +134,32 @@
 ##### 조달 등록/유지 관리
 ##### 공공 제안 서류 제출
 ##### 공공 고객 계약 관리
+
+#### 영업 행정
+##### 계약/발주 서류 정리
+##### 내부 결재 프로세스 지원
+
+#### 이력 관리
+##### 인바운드 문의 이력 관리
+##### 공공 조달 진행 이력 관리
+
+### 산출물
+#### 사업부 매출 시트
+#### 인바운드 문의 관리 리스트
+#### 공공 조달 제출 이력
+#### 계약/행정 관리 자료
 </pre>
 
 <script>
-  // 🔴 핵심: 로드 후 자동 중앙 정렬 + 적당한 확대
   window.addEventListener('load', () => {
     const svg = document.querySelector('svg');
     if (!svg) return;
 
     const bbox = svg.getBBox();
-    const viewBox = [
-      bbox.x - 100,
-      bbox.y - 100,
-      bbox.width + 200,
-      bbox.height + 200
-    ].join(' ');
-
-    svg.setAttribute('viewBox', viewBox);
+    svg.setAttribute(
+      'viewBox',
+      `${bbox.x - 100} ${bbox.y - 100} ${bbox.width + 200} ${bbox.height + 200}`
+    );
   });
 </script>
 </body>
