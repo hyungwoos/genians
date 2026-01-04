@@ -4,13 +4,30 @@
   <meta charset="UTF-8" />
   <title>Service사업부 인원별 R&R</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Markmap -->
   <script src="https://cdn.jsdelivr.net/npm/markmap-autoloader"></script>
+
+  <!-- 🔴 핵심: 전체 화면을 쓰도록 영역 강제 -->
   <style>
-    body { margin: 0; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+    .markmap {
+      width: 100vw;
+      height: 100vh;
+    }
+    svg {
+      width: 100%;
+      height: 100%;
+    }
   </style>
 </head>
+
 <body>
-  <h1>TEST-123</h1>
 <pre class="markmap">
 # Service사업부 인원별 R&R
 
